@@ -12,62 +12,62 @@
             margin: 0;
             font-family: "Segoe UI", sans-serif;
             background: linear-gradient(180deg, #fff7e6, #ffe0b3);
-            overflow: hidden;
             text-align: center;
+            overflow: hidden;
         }
 
         h1 {
-            margin-top: 40px;
-            font-size: 2.5rem;
+            margin-top: 30px;
             color: #5a3e1b;
         }
 
-        p {
-            color: #7a5c2e;
-        }
-
-        /* うんこアニメーション */
-        .poop {
-            position: absolute;
-            font-size: 40px;
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(-10vh) rotate(0deg);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateY(110vh) rotate(360deg);
-                opacity: 0;
-            }
+        .card {
+            background: white;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 16px;
+            width: 300px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
         /* ボタン */
         button {
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 12px 24px;
-            font-size: 1rem;
             border: none;
             border-radius: 30px;
             background: #8b5a2b;
             color: white;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.2s;
         }
 
         button:hover {
-            background: #a66b33;
             transform: scale(1.1);
         }
 
-        /* メッセージ */
-        #message {
-            margin-top: 20px;
-            font-size: 1.2rem;
-            font-weight: bold;
+        /* スコア */
+        .score {
+            font-size: 2rem;
+            margin-top: 10px;
+            color: #5a3e1b;
+        }
+
+        /* うんこアニメ */
+        .poop {
+            position: absolute;
+            font-size: 30px;
+            animation: fall linear;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh);
+            }
+
+            100% {
+                transform: translateY(110vh);
+            }
         }
     </style>
 
@@ -75,16 +75,54 @@
 
 <body>
 
-    <h1>💩 真奈美ちゃん専用 💩</h1>
-    <p>ようこそ、世界で一番ゆるいホームページへ</p>
+    <h1>💩 真奈美ちゃんの世界 💩</h1>
 
-    <button onclick="showMessage()">クリックしてね</button>
+    <div class="card">
+        <h2>プロフィール</h2>
+        <p>名前：真奈美ちゃん</p>
+        <p>属性：うんこマスター💩</p>
+        <p>好き：ポヨン音とスコア稼ぎ</p>
+    </div>
 
-    <div id="message"></div>
+    <div class="card">
+        <h2>クリックしてね</h2>
+        <button onclick="clickPoop()">💩 タップ！</button>
+        <div class="score">スコア: <span id="score">0</span></div>
+    </div>
+
+    <audio id="poopSound">
+        <source src="https://www.soundjay.com/button/sounds/button-16.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
-        // うんこを降らせる
-        function createPoop() {
+        let score = 0;
+
+        // クリック処理
+        function clickPoop() {
+            score++;
+            document.getElementById("score").innerText = score;
+
+            // 音
+            const sound = document.getElementById("poopSound");
+            sound.currentTime = 0;
+            sound.play();
+
+            // うんこアニメ
+            const poop = document.createElement("div");
+            poop.className = "poop";
+            poop.innerText = "💩";
+
+            poop.style.left = Math.random() * 100 + "vw";
+            poop.style.top = "-10vh";
+            poop.style.animationDuration = (Math.random() * 2 + 2) + "s";
+
+            document.body.appendChild(poop);
+
+            setTimeout(() => poop.remove(), 4000);
+        }
+
+        // 自動で降る
+        setInterval(() => {
             const poop = document.createElement("div");
             poop.className = "poop";
             poop.innerText = "💩";
@@ -94,26 +132,8 @@
 
             document.body.appendChild(poop);
 
-            setTimeout(() => {
-                poop.remove();
-            }, 5000);
-        }
-
-        setInterval(createPoop, 300);
-
-        // メッセージ
-        function showMessage() {
-            const messages = [
-                "今日もいい💩出てるね！",
-                "運気アップ中💩✨",
-                "最高のコンディション！",
-                "真奈美ちゃん優勝🏆",
-                "💩 is power"
-            ];
-
-            const random = messages[Math.floor(Math.random() * messages.length)];
-            document.getElementById("message").innerText = random;
-        }
+            setTimeout(() => poop.remove(), 5000);
+        }, 500);
     </script>
 
 </body>
