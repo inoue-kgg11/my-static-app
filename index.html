@@ -4,70 +4,18 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>真奈美ちゃんのうんこワールド💩</title>
+    <title>リアルタイム絵しりとり（MVP）</title>
+    <script src="https://unpkg.com/@azure/web-pubsub-client"></script>
 
     <style>
         body {
-            margin: 0;
-            font-family: "Segoe UI", sans-serif;
-            background: linear-gradient(180deg, #fff7e6, #ffe0b3);
             text-align: center;
-            overflow: hidden;
+            font-family: sans-serif;
         }
 
-        h1 {
-            margin-top: 30px;
-            color: #5a3e1b;
-        }
-
-        .card {
-            background: white;
-            margin: 20px auto;
-            padding: 20px;
-            border-radius: 16px;
-            width: 300px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        /* ボタン */
-        button {
-            margin-top: 15px;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 30px;
-            background: #8b5a2b;
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        button:hover {
-            transform: scale(1.1);
-        }
-
-        /* スコア */
-        .score {
-            font-size: 2rem;
-            margin-top: 10px;
-            color: #5a3e1b;
-        }
-
-        /* うんこアニメ */
-        .poop {
-            position: absolute;
-            font-size: 30px;
-            animation: fall linear;
-        }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(-10vh);
-            }
-
-            100% {
-                transform: translateY(110vh);
-            }
+        canvas {
+            border: 2px solid #333;
+            margin-top: 20px;
         }
     </style>
 
@@ -75,65 +23,49 @@
 
 <body>
 
-    <h1>💩 真奈美ちゃんの世界 💩</h1>
+    <h1>🎨 リアルタイムお絵かき</h1>
 
-    <div class="card">
-        <h2>プロフィール</h2>
-        <p>名前：真奈美ちゃん</p>
-        <p>属性：うんこマスター💩</p>
-        <p>好き：ポヨン音とスコア稼ぎ</p>
-    </div>
-
-    <div class="card">
-        <h2>クリックしてね</h2>
-        <button onclick="clickPoop()">💩 タップ！</button>
-        <div class="score">スコア: <span id="score">0</span></div>
-    </div>
-
-    <audio id="poopSound">
-        <source src="https://www.soundjay.com/button/sounds/button-16.mp3" type="audio/mpeg">
-    </audio>
+    <canvas id="canvas" width="400" height="400"></canvas>
 
     <script>
-        let score = 0;
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
 
-        // クリック処理
-        function clickPoop() {
-            score++;
-            document.getElementById("score").innerText = score;
+        let drawing = false;
 
-            // 音
-            const sound = document.getElementById("poopSound");
-            sound.currentTime = 0;
-            sound.play();
+        // ★ あなたのWeb PubSub URLに変更
+        const url = "wss://YOUR-ENDPOINT.webpubsub.azure.com/client/hubs/chat";
 
-            // うんこアニメ
-            const poop = document.createElement("div");
-            poop.className = "poop";
-            poop.innerText = "💩";
+        const client = new WebPubSubClient(url);
 
-            poop.style.left = Math.random() * 100 + "vw";
-            poop.style.top = "-10vh";
-            poop.style.animationDuration = (Math.random() * 2 + 2) + "s";
+        client.on("message", e => {
+            const data = JSON.parse(e.message.data);
 
-            document.body.appendChild(poop);
+            draw(data.x, data.y);
+        });
 
-            setTimeout(() => poop.remove(), 4000);
+        client.start();
+
+        // 描画
+        function draw(x, y) {
+            ctx.fillRect(x, y, 4, 4);
         }
 
-        // 自動で降る
-        setInterval(() => {
-            const poop = document.createElement("div");
-            poop.className = "poop";
-            poop.innerText = "💩";
+        // マウス操作
+        canvas.addEventListener("mousedown", () => drawing = true);
+        canvas.addEventListener("mouseup", () => drawing = false);
 
-            poop.style.left = Math.random() * 100 + "vw";
-            poop.style.animationDuration = (Math.random() * 3 + 2) + "s";
+        canvas.addEventListener("mousemove", e => {
+            if (!drawing) return;
 
-            document.body.appendChild(poop);
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
 
-            setTimeout(() => poop.remove(), 5000);
-        }, 500);
+            draw(x, y);
+
+            client.send(JSON.stringify({ x, y }));
+        });
     </script>
 
 </body>
