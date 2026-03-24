@@ -5,63 +5,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ただいまメンテナンス中</title>
+    <title>真奈美ちゃんのうんこワールド💩</title>
+
     <style>
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: #fff;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .container {
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(180deg, #fff7e6, #ffe0b3);
+            overflow: hidden;
             text-align: center;
-            padding: 40px;
         }
 
         h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
+            margin-top: 40px;
+            font-size: 2.5rem;
+            color: #5a3e1b;
         }
 
         p {
-            font-size: 1.2rem;
-            opacity: 0.9;
+            color: #7a5c2e;
         }
 
-        .loader {
-            margin: 30px auto;
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #fff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        /* うんこアニメーション */
+        .poop {
+            position: absolute;
+            font-size: 40px;
+            animation: fall linear infinite;
         }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
             }
         }
 
-        .badge {
+        /* ボタン */
+        button {
             margin-top: 20px;
-            display: inline-block;
-            padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 999px;
-            font-size: 0.9rem;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 30px;
+            background: #8b5a2b;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
-        .footer {
-            margin-top: 30px;
-            font-size: 0.9rem;
-            opacity: 0.7;
+        button:hover {
+            background: #a66b33;
+            transform: scale(1.1);
+        }
+
+        /* メッセージ */
+        #message {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
         }
     </style>
 
@@ -69,18 +75,46 @@
 
 <body>
 
-    <div class="container">
-        <h1>🚧 メンテナンス中</h1>
-        <p>より良い体験のためにアップデートしています</p>
+    <h1>💩 真奈美ちゃん専用 💩</h1>
+    <p>ようこそ、世界で一番ゆるいホームページへ</p>
 
-        <div class="loader"></div>
+    <button onclick="showMessage()">クリックしてね</button>
 
-        <div class="badge">Coming back soon...</div>
+    <div id="message"></div>
 
-        <div class="footer">
-            少しだけお待ちください 🙏
-        </div>
-    </div>
+    <script>
+        // うんこを降らせる
+        function createPoop() {
+            const poop = document.createElement("div");
+            poop.className = "poop";
+            poop.innerText = "💩";
+
+            poop.style.left = Math.random() * 100 + "vw";
+            poop.style.animationDuration = (Math.random() * 3 + 2) + "s";
+
+            document.body.appendChild(poop);
+
+            setTimeout(() => {
+                poop.remove();
+            }, 5000);
+        }
+
+        setInterval(createPoop, 300);
+
+        // メッセージ
+        function showMessage() {
+            const messages = [
+                "今日もいい💩出てるね！",
+                "運気アップ中💩✨",
+                "最高のコンディション！",
+                "真奈美ちゃん優勝🏆",
+                "💩 is power"
+            ];
+
+            const random = messages[Math.floor(Math.random() * messages.length)];
+            document.getElementById("message").innerText = random;
+        }
+    </script>
 
 </body>
 
